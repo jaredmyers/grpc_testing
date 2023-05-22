@@ -18,6 +18,9 @@ class Users(pbg.UsersServicer):
     users = [u1, u2, u3, u4, u5, u6]
 
     def GetUsers(self, request, context):
+
+        # grpc repeatable type
+        # users is a list of pb.User types
         response = pb.GetUsersResponse(users=self.users)
 
         return response
@@ -50,19 +53,36 @@ class Users(pbg.UsersServicer):
         return pb.DeleteUserResponse(user=request.user)
 
     def GetUserStream(self, request, context):
+
+        # send stream back to client, one user at a time
         for user in self.users:
             response = pb.GetUserStreamResponse(user=user)
+
             yield response
             time.sleep(2)
 
     def CreateUserStream(self, request_iterator, context):
-        print("running creatUserStream")
+
+        # iterate over what client stream sent for demonstration
         count = 0
         for request in request_iterator:
             print(request)
             count = count + 1
 
+        # send back struct with the demo processed count
         return pb.CreateUserStreamResponse(result=str(count))
+
+    def CreateUserDualStream(self, request_iterator, context):
+
+        # iterator over what client stream sent for demonstration
+        for req in request_iterator:
+            print(req)
+
+        # send stream back to client
+        for user in self.users:
+            response = pb.GetUserStreamResponse(user=user)
+            yield response
+            time.sleep(2)
 
 
 def serve():

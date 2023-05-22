@@ -49,6 +49,11 @@ class UsersStub(object):
                 request_serializer=users__pb2.CreateUserStreamRequest.SerializeToString,
                 response_deserializer=users__pb2.CreateUserStreamResponse.FromString,
                 )
+        self.CreateUserDualStream = channel.stream_stream(
+                '/users.Users/CreateUserDualStream',
+                request_serializer=users__pb2.CreateUserStreamRequest.SerializeToString,
+                response_deserializer=users__pb2.GetUserStreamResponse.FromString,
+                )
 
 
 class UsersServicer(object):
@@ -96,6 +101,12 @@ class UsersServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def CreateUserDualStream(self, request_iterator, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_UsersServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -133,6 +144,11 @@ def add_UsersServicer_to_server(servicer, server):
                     servicer.CreateUserStream,
                     request_deserializer=users__pb2.CreateUserStreamRequest.FromString,
                     response_serializer=users__pb2.CreateUserStreamResponse.SerializeToString,
+            ),
+            'CreateUserDualStream': grpc.stream_stream_rpc_method_handler(
+                    servicer.CreateUserDualStream,
+                    request_deserializer=users__pb2.CreateUserStreamRequest.FromString,
+                    response_serializer=users__pb2.GetUserStreamResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -260,5 +276,22 @@ class Users(object):
         return grpc.experimental.stream_unary(request_iterator, target, '/users.Users/CreateUserStream',
             users__pb2.CreateUserStreamRequest.SerializeToString,
             users__pb2.CreateUserStreamResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def CreateUserDualStream(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_stream(request_iterator, target, '/users.Users/CreateUserDualStream',
+            users__pb2.CreateUserStreamRequest.SerializeToString,
+            users__pb2.GetUserStreamResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -26,21 +26,13 @@ def run(URI):
     with grpc.insecure_channel(URI) as channel:
         stub = pbg.UsersStub(channel)
 
+
         """
         get_users_responses = stub.GetUserStream(pb.GetUserStreamRequest())
         print(get_users_responses)
         for response in get_users_responses:
             print(response)
-        """
 
-        create_user_stream_response = stub.CreateUserStream(request_stream())
-
-        print(create_user_stream_response)
-
-
-
-
-        """
         get_user_by_id_response = stub.GetUserById(users_pb2.GetUserByIdRequest(id="1"))
 
         u3 = users_pb2.User(id="3", name="Funky", email="mail.as", password="pwwpww")
@@ -54,7 +46,13 @@ def run(URI):
         delete_user_response = stub.DeleteUser(users_pb2.DeleteUserRequest(user=u3))
 
         get_another2_users_response = stub.GetUsers(users_pb2.GetUsersRequest())
+
+        create_user_stream_response = stub.CreateUserStream(request_stream())
         """
+
+        dual_stream_response = stub.CreateUserDualStream(request_stream())
+        for res in dual_stream_response:
+            print(res)
 
     """
 
